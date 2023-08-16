@@ -1,13 +1,25 @@
-import React, { useEffect, useState } from 'react'; // Import React and other necessary modules
-import fetch from 'node-fetch';
+import React, { useEffect, useState } from 'react';
+import fetch, { RequestInit } from 'node-fetch';
+
+interface ERC1155Metadata {
+  tokenId: string;
+}
+
+interface ERC1155Event {
+  erc1155Metadata: ERC1155Metadata[] | null;
+  tokenId: string;
+  rawContract: {
+    address: string;
+  };
+}
 
 const address = "0x5c43B1eD97e52d009611D89b74fA829FE4ac56b1";
 const apiKey = '8J8m-U5NKDwJk_q8Rl_f5LCOfrIBci1T';
 const baseURL = `https://eth-mainnet.alchemyapi.io/v2/${apiKey}`;
 const fetchURL = `${baseURL}`;
 
-const NFTTransactions = () => {
-  const [transactions, setTransactions] = useState([]);
+const NFTTransactions: React.FC = () => {
+  const [transactions, setTransactions] = useState<ERC1155Event[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,11 +39,11 @@ const NFTTransactions = () => {
           ]
         });
 
-        const requestOptions = {
+        const requestOptions: RequestInit = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: data,
-          redirect: 'follow'
+          redirect: 'follow' as const
         };
 
         const response = await fetch(fetchURL, requestOptions);
